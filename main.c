@@ -193,6 +193,133 @@ void display_table_open() {
 //*************************************************closed hashing*************************************************
 //****************************************************************************************************************
 //****************************************************************************************************************
+int hash_func_birthday(int day, int month, int year){
+
+    long int value =0;
+    value=day+month+year;
+    value=value%table_size;
+    return value;
+}
+
+void student_insert_closed_hashing(char *name,int id,int day,int month, int year,int score){
+
+    int index=hash_func_birthday(day,month,year);
+    struct student* insertion_entry=hash_table_closed[index];
+    if (hash_table_closed[index]==NULL){
+        hash_table_closed[index]=insert(name,id,day,month,year,score);
+    }
+    else{
+        while(hash_table_closed[index]!=NULL){
+            index++;
+            index=index%table_size;
+        }
+        hash_table_closed[index]=insert(name,id,day,month,year,score);
+
+    }
+}
+
+
+
+
+
+void student_insert_closed_hashing_quad(char *name,int id,int day,int month, int year,int score){
+
+    int index=hash_func_birthday(day,month,year);
+    int index_const=index;
+    struct student* insertion_entry=hash_table_closed[index];
+    if (hash_table_closed[index]==NULL){
+        hash_table_closed[index]=insert(name,id,day,month,year,score);
+    }
+    else{
+        for(int i=0;i<table_size;i++)
+        if(hash_table_closed[index]!=NULL){
+            index=index_const;
+            index=index+i*i;
+            index=index%table_size;
+        }
+        if (index>table_size){}
+        hash_table_closed[index]=insert(name,id,day,month,year,score);
+
+    }
+}
+
+
+struct student * student_search_closed_hashing(int day, int month, int year){
+
+    int l=0;
+    int index=hash_func_birthday(day,month,year);
+    struct student* search_entry=hash_table_closed[index];
+
+        while(index<table_size){
+            search_entry=hash_table_closed[index];
+            if(search_entry!=NULL){
+            int u=search_entry->day;
+            int i=search_entry->month;
+            int o=search_entry->year;
+            if(u==day&&i==month&&o==year){
+                  return search_entry;
+        }
+                }
+        if (index==(table_size-1)&&l==0){
+            index=0;
+            l++;
+        }
+            index++;
+        }
+         return NULL;
+}
+
+
+int delete_student_closed(int day, int month, int year){
+
+    int l=0;
+    int index=hash_func_birthday(day,month,year);
+    struct student* search_entry=hash_table_closed[index];
+
+        while(index<table_size){
+            search_entry=hash_table_closed[index];
+            if(search_entry!=NULL){
+            int u=search_entry->day;
+            int i=search_entry->month;
+            int o=search_entry->year;
+            if(u==day&&i==month&&o==year){
+                hash_table_closed[index]=dummy;
+                return 1;
+        }
+        }
+        if (index==(table_size-1)&&l==0){
+            index=0;
+            l++;
+        }
+            index++;
+        }
+         return 0;
+    }
+
+
+
+
+
+void display_table_closed() {
+    int z=0;
+    for (int i = 0; i < table_size; i++) {
+        struct student *entry = hash_table_closed[i];
+
+        if (entry == NULL) {
+            continue;
+        }
+        z++;
+        printf("slot[%d]: ", i);
+        printf("\n\n student name : %s", entry->std_name);
+        printf("\n student ID : %d",entry->std_id);
+        printf("\n student birth date (day//month//year): %d",entry->day);
+        printf("// %d",entry->month);
+        printf("// %d", entry->year);
+        printf("\n student last year score: %d", entry->std_score);
+        printf("\n*******************************\n");
+    }
+    if(z==0){printf("the table is empty \n");}
+}
 
 
 //****************************************************************************************************************
